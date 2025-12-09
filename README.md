@@ -14,6 +14,15 @@ A minimal, self-contained **retrieval-only** service:
 
 ---
 
+## What This Project Demonstrates
+
+- End-to-end document ingestion → chunking → embeddings → vector search.
+- Using BAAI/bge-m3 embeddings with a persistent FAISS index.
+- A small FastAPI service that exposes both HTML and JSON APIs.
+- A retrieval-only backend that other LLM/agent services can call for context.
+
+---
+
 ## Features
 
 * 🔹 Document ingestion from the browser (upload) or API.
@@ -223,12 +232,12 @@ On query:
 
 1. **Home / status screen**
 
-![alt text](images/image-1.png)
+![alt text](docs/screenshots/image-1.png)
 
 2. **Upload success**
 
-![alt text](images/image-2.png)
+![alt text](docs/screenshots/image-2.png)
 
 3. **Ask the library result**
 
-![alt text](images/image.png)
+![alt text](docs/screenshots/image.png)
