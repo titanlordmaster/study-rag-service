@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Study RAG · UI{% endblock %}
+
+{% block content %}
+<div class="grid">
+  <!-- Left: ingest -->
+  <section class="card">
+    <h2 class="card-title">1 · Ingest documents</h2>
+    <p class="card-subtitle">
+      Upload <code>.txt</code>, <code>.md</code>, or <code>.pdf</code>. They’re stored under <code>data/knowledge/</code>
+      inside the container and indexed into FAISS with GPU-backed embeddings (when enabled).
+    </p>
+
+    <form class="form" method="post" action="/ui/upload" enctype="multipart/form-data">
+      <label class="field">
+        <span>File</span>
+        <input type="file" name="file" required />
+      </label>
+
+      <button type="submit" class="btn primary">Upload &amp; ingest</button>
+    </form>
+
+    <hr class="divider" />
+
+    <h3 class="card-subtitle">Ingest from path (optional)</h3>
+    <p class="muted">
+      Path inside the container, or relative to <code>data/knowledge/</code>. Use this to bulk-ingest a directory.
+    </p>
+
+    <form class="form" method="post" action="/ui/ingest-path">
+      <label class="field">
+        <span>Path</span>
+        <input type="text" name="path" placeholder="docs/bedrock" />
+      </label>
+      <button type="submit" class="btn">Ingest path</button>
+    </form>
+  </section>
+
+  <!-- Right: query -->
+  <section class="card">
+    <h2 class="card-title">2 · Ask the library</h2>
+    <p class="card-subtitle">
+      We embed your question, retrieve similar chunks, and show them back to you.
+      This service does <strong>not</strong> call an LLM – it just returns top matching snippets
+      for your copilot/agent service to consume.
+    </p>
+
+    <form class="form" method="post" action="/ui/query">
+      <label class="field">
+        <span>Question</span>
+        <textarea name="question" rows="4" required>{{ question or "" }}</textarea>
+      </label>
+
+      <label class="field field-inline">
+        <span>Top-K chunks</span>
+        <input type="number" name="k" min="1" max="20" value="{{ k or 5 }}" />
+      </label>
+
+      <button type="submit" class="btn primary">Ask</button>
+    </form>
+
+    {% if result %}
+      <hr class="divider" />
+
+      <div class="section">
+        <h3 class="section-title">Retrieved context</h3>
+        <pre class="answer-block">{{ result.answer }}</pre>
+      </div>
+
+      <div class="section">
+        <h3 class="section-title">Retrieved chunks</h3>
+        <p class="muted">
+          These are the chunks returned from the vector store.
+          Project 2 (Copilot) can feed them into an LLM to build a final answer.
+        </p>
+        <div class="chunks">
+          {% for c in result.retrieved %}
+            <article class="chunk">
+              <div class="chunk-meta">
+                <span class="pill">{{ c.source }}</span>
+                <span class="pill">chunk {{ c.chunk_id }}</span>
+              </div>
+              <pre class="chunk-text">{{ c.text }}</pre>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <p class="muted" style="margin-top:1rem;">
+        After you ingest at least one document, ask something and you’ll see the retrieved chunks here.
+      </p>
+    {% endif %}
+  </section>
+</div>
+
+{% if message %}
+  <div class="toast">
+    {{ message }}
+  </div>
+{% endif %}
+{% endblock %}

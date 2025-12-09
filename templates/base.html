@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Study RAG Service{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
+</head>
+<body>
+  <div class="shell">
+    <header class="header">
+      <div>
+        <h1 class="title">Study RAG</h1>
+        <p class="subtitle">Ingest docs · Run retrieval · Feed your own LLM</p>
+      </div>
+      {% if status %}
+      <div class="status-chip">
+        {{ status.doc_count }} chunks · {{ status.index_type }} · dim {{ status.embedding_dimension }}
+      </div>
+      {% endif %}
+    </header>
+
+    <main class="main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

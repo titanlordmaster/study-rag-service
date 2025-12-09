@@ -1,0 +1,12 @@
+services:
+  study-rag:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      EMBED_MODEL: "BAAI/bge-m3"
+      # EMBED_DIM is optional; we probe it automatically.
+      # You can also swap models here, e.g.:
+      # EMBED_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+    volumes:
+      - ./data:/app/data
